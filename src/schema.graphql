@@ -1,0 +1,31 @@
+type Movie {
+  id: ID
+  title: String
+  genre: String
+  desc: String
+  poster: String
+  year: String
+}
+
+type Query {
+  loadMovieList: [Movie]
+}
+
+enum MovieGenre {
+  Action
+  Adventure
+  Drama
+}
+
+type Mutation {
+  createMovie(input: CreateMovieInput!): Movie
+}
+
+input CreateMovieInput {
+  movieId: ID
+  title: String!
+  genre: MovieGenre!
+  desc: String
+  poster: String
+  year: String
+}
