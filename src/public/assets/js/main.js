@@ -2,6 +2,7 @@ const loadMovieListBtn = document.getElementById("loadMovieListBtn");
 const loadAddMovieBtn = document.getElementById("loadAddMovieBtn");
 const div = document.getElementById("movie-container");
 const movieFormDiv = document.getElementById("movie-form-container");
+const apiURL = "https://sheetdb.io/api/v1/hqn718npovs82";
 
 loadMovieListBtn.addEventListener("click", () => {
   getAllMovies();
@@ -125,4 +126,27 @@ function displayAddMovie(){
   movieForm.appendChild(movieDescLabel);
   movieForm.appendChild(movieDescTextarea);
   movieForm.appendChild(movieSubmitBtn);
+
+  movieSubmitBtn.addEventListener("click", () => {
+    fetch(apiURL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: [
+          {
+            id: Date.now(),
+            title: movieTitleInput.value,
+            genre: movieGenreSelect.value,
+            desc: movieDescTextarea.value,
+            poster: moviePosterInput.value,
+            year: movieYearInput.value,
+          },
+        ],
+      }),
+    }).then((response) => response.json())
+      .then((data) => console.log(data));
+  });
 }

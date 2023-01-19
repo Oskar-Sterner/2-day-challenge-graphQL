@@ -18,13 +18,13 @@ enum MovieGenre {
 }
 
 type Mutation {
-  createMovie(input: CreateMovieInput!): Movie
+  createMovie(input: CreateMovie!): Movie
 }
 
-input CreateMovieInput {
-  movieId: ID
+input CreateMovie {
+  id: ID!
   title: String!
-  genre: MovieGenre!
+  genre: MovieGenre
   desc: String
   poster: String
   year: String

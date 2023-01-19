@@ -9,7 +9,6 @@ const {
 } = require("../utils/fileHandling");
 
 const { GraphQLError, printType } = require("graphql");
-const crypto = require("crypto");
 const { movieGenre } = require("../enums/movies");
 
 const axios = require("axios").default;
@@ -25,47 +24,53 @@ exports.resolvers = {
           movies = response.data;
         }
       } catch (error) {
-        return new GraphQLError("Det finns inga filmer!");
+        return new GraphQLError("Det finns inga filmer att hämta");
       }
       return movies;
     },
   },
   Mutation: {
     createMovie: async (_, args) => {
+      const { id, title, genre, desc, poster, year } = args.input;
+
       if ((args, title.length === 0))
-        return new GraphQLError("Titeln måste vara längre än en bokstav.");
 
-      let idExists = true;
-      if (!idExists)
-        return new GraphQLError("Denna film finns redan.");
+        return new GraphQLError("Titeln ska vara över 0 karaktärer lång");
 
-      const newMovie = {
-        id: crypto.randomUUID(),
+      const createMovie = {
+        id: id || "",
         title,
-        desc: desc || "",
         genre: genre || "",
+        desc: desc || "",
         poster: poster || "",
-        year: year
+        year: year || "",
       };
+      
 
-      try {
-        const endpoint = process.env.MOVIE_DB_URI;
-        const response = await axios.post(
-          endpoint,
-          {
-            data: [newMovie],
-          },
-          {
-            headers: {
-              "Accept-Encoding": "gzip,deflate,compress",
+      const endpoint = process.env.MOVIE_DB_URI;
+      const response = await axios.get(endpoint);
+
+      movieList = response.data;
+
+      if (movieList.length === 0) {
+        try {
+          const response = await axios.post(endpoint,
+            {
+              data: [createMovie],
             },
-          }
-        );
-      } catch (error) {
-        console.error(error);
-        return new GraphQLError("Filmen gick inte att spara.");
+            {
+              headers:
+               {
+                "Accept-Encoding": "gzip,deflate,compress",
+              },
+            }
+          );
+        } catch (error) {
+          console.error(error);
+          return new GraphQLError("Det gick inte att skapa filmen...");
+        }
       }
-      return newMovie;
+      return createMovie;
     },
   },
 };

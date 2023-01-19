@@ -45,6 +45,7 @@ body {
     background-color: rgb(38, 38, 38);
     border-radius: 25px;
     transition: 300ms;
+    margin-bottom: 25px;
   }
   .movie-element:hover{
     background-color: rgb(15, 15, 15);
