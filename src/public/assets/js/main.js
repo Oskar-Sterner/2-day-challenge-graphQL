@@ -1,28 +1,38 @@
-const loadMovieListBtn = document.getElementById("loadMovieListBtn");
 
-const fetchMovieListFromGraphQL = async () => {
-    try {
-          const res = await graphqlQuery("http://localhost:5000/graphql", ExampleQuery)
-          const fetchedData = res.data?.loadMovieList.map((newMovie) => {
-              return {
-                      id: newMovie.id,
-                      title: newMovie.title,
-                      desc: newMovie.desc,
-                      genre: newMovie.genre,
-                      poster: newMovie.poster,
-                      year: newMovie.year,
-              }
-          })
-          return fetchedData
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-}
+const loadMovieListBtn = document.getElementById("loadMovieListBtn");
+const ul = document.getElementById("movie-container");
 
 loadMovieListBtn.addEventListener("click", () => {
   getAllMovies();
 });
 
 function getAllMovies() {
+  const resultData = "";
+  const query =  `
+  query LoadMovieList {
+    loadMovieList {
+      id
+      desc
+      genre
+      poster
+      title
+      year
+    }
+  }
+  `;
+
+  fetch("http://localhost:5000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify({
+      query
+    })
+  }).then(response => {
+    return response.json();
+  }).then(data => {
+    ul.innerHTML = JSON.stringify(data);
+  })
 }
